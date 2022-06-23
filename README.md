@@ -12,8 +12,8 @@ We're going to debug gatekeeper in this case, to make things realistic (also bec
 
 I have the k3d cluster configured with `nerdctl` and the `cni` plugins for manipulating the network. I need to:
 
-- Copy down the certificates in the gatekeeper pod
-- Execute a `netshoot` container in the same networking namespace as gatekeeper
-- Figure out how to use `tcpdump` (or a similar tool) against the data **While using the certificates!**
+- [X] Copy down the certificates in the gatekeeper pod
+- [ ] Execute a `netshoot` container in the same networking namespace as gatekeeper
+- [ ] Figure out how to use `tcpdump` (or a similar tool) against the data **While using the certificates!**
 
 

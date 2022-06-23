@@ -49,9 +49,18 @@ netshoot:
 	ID=$$(kubectl get pod -n gatekeeper-system $$POD \
     -o jsonpath='{.status.containerStatuses[0].containerID}'); \
 	docker exec -it k3d-$(CLUSTER_NAME)-server-0 \
-		$(NERDCTL) -it --rm --net container:$$ID \
-			nicolaka/netshoot tcpdump \
-			-i eth0 -s 0 -Xvv tcp port 80
+		$(NERDCTL) run -it --rm --net container:$$ID \
+			nicolaka/netshoot -- sh
+	# tcpdump -i eth0 -s 0 -Xvv tcp port 80
+
+CERTS := certs/ca.crt certs/ca.key certs/tls.crt certs/tls.key
+certs: $(CERTS)
+$(CERTS):
+	mkdir -p certs
+	F=$$(basename $@); \
+	kubectl get secret \
+		-n gatekeeper-system gatekeeper-webhook-server-cert \
+		-o json | jq -r --arg k $$(basename $@) '.data[$$k] | @base64d' > $@
 
 # docker run -it --rm --net container:k8s_nginx_my-nginx-b7d7bc74d-zxx28_default_ae4ee834-fb5d-4ec4-86b1-7834e538c666_0 nicolaka/netshoot tcpdump -i eth0 -s 0 -Xvv tcp port 80
 
